@@ -1,6 +1,6 @@
 # Xinya TOCFL — public student interface
 
-This repository contains only the student website. Student data, credentials, answer keys and teacher management remain in the private Google backend. Current questions are demonstration questions; official books are not imported yet.
+This repository contains only the student website. Student data, credentials, answer keys and teacher management remain in the private Google backend. Band A and Band B Volume 1 contain official mock-test question images and audio: 50 listening and 50 reading items per band (200 items total). Volumes 2–5 remain unavailable. Original content retains its original rights; see assets/official/vol1/README.md for source attribution.
 
 ## Publish
 In Settings → Pages select Deploy from a branch, main, / (root). No build or paid service is required.
