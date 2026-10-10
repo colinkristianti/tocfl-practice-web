@@ -1,0 +1,49 @@
+name: Build verified official volumes 2–5
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['scripts/import-volumes/**', '.github/workflows/import-volumes.yml']
+permissions:
+  contents: write
+concurrency:
+  group: official-volumes-import
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install the PDF and audio tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y libarchive-tools
+          python -m pip install -r scripts/import-volumes/requirements.txt
+      - name: Download, verify and render the official material
+        run: python scripts/import-volumes/prepare.py
+      - name: Store the verified public learning assets
+        run: |
+          mkdir -p assets/official
+          cp -R scripts/import-volumes/assets/vol2 assets/official/
+          cp -R scripts/import-volumes/assets/vol3 assets/official/
+          cp -R scripts/import-volumes/assets/vol4 assets/official/
+          cp -R scripts/import-volumes/assets/vol5 assets/official/
+          cp scripts/import-volumes/assets/volumes2-5-manifest.json assets/official/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/official/vol2 assets/official/vol3 assets/official/vol4 assets/official/vol5 assets/official/volumes2-5-manifest.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Add 800 verified official questions and 400 listening clips for volumes 2–5'
+            git push origin HEAD:main
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: official-import-audit
+          path: |
+            scripts/import-volumes/audit.json
+            scripts/import-volumes/audio-audit.json
+          retention-days: 7
