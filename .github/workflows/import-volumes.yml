@@ -1,9 +1,6 @@
 name: Build verified official volumes 2–5
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths: ['scripts/import-volumes/**', '.github/workflows/import-volumes.yml']
 permissions:
   contents: write
 concurrency:

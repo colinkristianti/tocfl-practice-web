@@ -78,13 +78,13 @@ for v in range(2,6):
     pageq=sorted([(nn,ww) for nn,(pp,ww) in maps.items() if pp==pi and ww],key=lambda x:(x[1]['top'],x[1]['x0']))
     def add(pp,x0,y0,x1,y1):parts.append(crop(pp,x0,y0,x1,y1));boxes.append([pp+1,x0,y0,x1,y1])
     if k=='type_paragraph':
-     if v in [3,4]:add(pi,40,45 if n<41 else 390,565,390 if n<41 else 780)
-     else:add(pi,40,45,565,780)
+     if v in [3,4]:add(pi,40,45 if n<41 else 390,565,390 if n<41 else p['height']-28)
+     else:add(pi,40,45,565,p['height']-28)
     elif s=='reading' and b=='B' and k=='type_cloze':
      first=min(ww['top'] for _,ww in pageq);add(pi,40,45,565,first-8)
      split=p['width']/2;x0=60 if w['x0']<split-10 else split-5;x1=split-5 if w['x0']<split-10 else 550
      later=[ww['top'] for _,ww in pageq if ww['top']>w['top']+5 and abs(ww['x0']-w['x0'])<35]
-     add(pi,x0,w['top']-5,x1,min(later)-8 if later else 780)
+     add(pi,x0,w['top']-5,x1,min(later)-8 if later else p['height']-28)
     elif s=='reading' and (k in ['type_cloze','type_passage']):
      rom=[ww for ww in words if ROMAN.fullmatch(ww['text']) and ww['top']<w['top']]
      # A section with two passages on a page resets its context at the Roman label.
@@ -94,15 +94,15 @@ for v in range(2,6):
      elif pi>3:
       prev=pages[pi-1]
       assert not any(pp==pi-1 for pp,ww in maps.values()) or b=='A',(f,n,'shared context needs manual review')
-      add(pi-1,40,45,565,780)
+      add(pi-1,40,45,565,p['height']-28)
      later=[ww['top'] for _,ww in pageq if ww['top']>w['top']+5]
      later += [ww['top'] for ww in words if ROMAN.fullmatch(ww['text']) and ww['top']>w['top']+5]
-     add(pi,40,w['top']-5,565,min(later)-8 if later else 780)
+     add(pi,40,w['top']-5,565,min(later)-8 if later else p['height']-28)
     else:
      later=[ww['top'] for _,ww in pageq if ww['top']>w['top']+5]
      # Do not append a later listening preview to the final actual item on a page.
      later += [ww['top'] for ww in words if (ww['text'].startswith('下面是') or ww['text'].startswith('請聽')) and ww['top']>w['top']+8]
-     add(pi,40,w['top']-6,565,min(later)-8 if later else 780)
+     add(pi,40,w['top']-6,565,min(later)-8 if later else p['height']-28)
     im=compose(parts);dest=R/'assets'/f'vol{v}';dest.mkdir(parents=True,exist_ok=True);name=f'{b}-v{v}-{s}-{n:03d}.webp'
     im.save(dest/name,'WEBP',quality=92,method=6)
     count=6 if k=='type_paragraph' else 3 if b=='A' and k not in ['type_dialogue','type_passage'] else 4
