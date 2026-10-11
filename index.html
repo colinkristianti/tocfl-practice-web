@@ -102,9 +102,8 @@ function browseTextHtml(q){
  const shared=group&&peers.length>1?text('textShared').replace('{start}',Math.min(...numbers)).replace('{end}',Math.max(...numbers)):'';
  if(owner.question_id!==q.question_id)return `<p class="text-reference muted">${esc(shared)} · <a href="#browse-${esc(owner.question_id)}" onclick="showSharedText('${esc(owner.question_id)}');return false">${esc(text('textSharedLink'))}</a></p>`;
  const values=['text_zh','text_pinyin','text_th'].map(k=>String(owner[k]||'').replace(/\r/g,'').split('\n'));
- const labels=['textChinese','textPinyin','textThai'];
  const aligned=values.every(v=>v.length===values[0].length);
- const units=aligned?values[0].map((_,i)=>values.map((v,j)=>`<p class="${['text-zh','text-pinyin','text-th'][j]}" lang="${['zh-Hant','zh-Latn-pinyin','th'][j]}"><span class="text-label">${esc(text(labels[j]))}</span><br>${esc(v[i])}</p>`).join('')):values.map((v,j)=>`<p lang="${['zh-Hant','zh-Latn-pinyin','th'][j]}"><span class="text-label">${esc(text(labels[j]))}</span><br>${esc(v.join('\n'))}</p>`);
+ const units=aligned?values[0].map((_,i)=>values.map((v,j)=>`<p class="${['text-zh','text-pinyin','text-th'][j]}" lang="${['zh-Hant','zh-Latn-pinyin','th'][j]}">${esc(v[i])}</p>`).join('')):values.map((v,j)=>`<p class="${['text-zh','text-pinyin','text-th'][j]}" lang="${['zh-Hant','zh-Latn-pinyin','th'][j]}">${esc(v.join('\n'))}</p>`);
  return `<details class="browse-text"><summary>${esc(text('textTitle'))}${shared?`<br><small>${esc(shared)}</small>`:''}</summary>${owner.text_status!=='已校稿'?`<p class="muted text-draft">${esc(text('textDraft'))}</p>`:''}${units.map(u=>`<div class="text-unit">${u}</div>`).join('')}${q.skill==='reading'?`<p class="muted text-draft">${esc(text('textImageNote'))}</p>`:''}</details>`;
 }
 
